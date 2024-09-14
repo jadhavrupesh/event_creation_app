@@ -109,12 +109,11 @@ class _EventListViewState extends State<EventListView> {
           child: GestureDetector(
             onTap: () {
               final selectedDate = DateTime(year, month + 1, day);
-              print("Data is Saved and selectedDate = $selectedDate");
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      CreateEventScreen(selectedDate: selectedDate),
+                  builder: (context) => CreateEventScreen(
+                      selectedDate: selectedDate, savedEvent: savedEvent),
                 ),
               );
             },

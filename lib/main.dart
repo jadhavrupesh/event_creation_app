@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue,
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
             brightness: Brightness.light,
-            useMaterial3: false),
+            useMaterial3: true),
         home: const EventListView(),
       ),
     );

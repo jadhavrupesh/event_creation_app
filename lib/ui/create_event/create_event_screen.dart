@@ -1,3 +1,4 @@
+import 'package:event_creation_app/data/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../provider/event_provider.dart';
@@ -5,8 +6,9 @@ import 'package:intl/intl.dart';
 
 class CreateEventScreen extends StatefulWidget {
   final DateTime selectedDate;
+  final EventModel? savedEvent;
 
-  CreateEventScreen({required this.selectedDate});
+  CreateEventScreen({required this.selectedDate, this.savedEvent});
 
   @override
   _CreateEventScreenState createState() => _CreateEventScreenState();
@@ -19,14 +21,23 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("Data is Saved and selectedDate = ${widget.selectedDate}");
+    var oldData = (widget.savedEvent != null) ? widget.savedEvent : null;
+    if (oldData != null) {
+      selectedTime = TimeOfDay(
+          hour: oldData.selectedDate.hour, minute: oldData.selectedDate.minute);
+      nameController.text = oldData.eventName;
+      descriptionController.text = oldData.eventDescription;
+    }
 
     return Consumer<EventProvider>(
       builder: (BuildContext context, EventProvider viewModel, Widget? child) {
         DateTime dateTime = DateTime.parse(widget.selectedDate.toString());
         String formattedDate = DateFormat('d MMMM yyyy').format(dateTime);
         return Scaffold(
-          appBar: AppBar(title: const Text('Create Event')),
+          appBar: AppBar(
+              title: oldData != null
+                  ? const Text('Update Event')
+                  : const Text('Create Event')),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -81,7 +92,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   minLines: 1,
                   maxLines: 10,
                   decoration:
-                  const InputDecoration(labelText: 'Event Description'),
+                      const InputDecoration(labelText: 'Event Description'),
                 ),
 
                 const SizedBox(height: 20),
@@ -91,7 +102,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   onPressed: () {
                     final eventName = nameController.text;
                     final eventDescription = descriptionController.text;
-
                     if (selectedTime != null) {
                       final DateTime eventDateTime = DateTime(
                         widget.selectedDate.year,
@@ -101,13 +111,21 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         selectedTime!.minute,
                       );
 
-                      Provider.of<EventProvider>(context, listen: false).setEvent(eventName, eventDescription, eventDateTime);
+                      if (oldData != null) {
+                        Provider.of<EventProvider>(context, listen: false)
+                            .updateEvent(oldData, eventName, eventDescription,
+                                eventDateTime);
+                      } else {
+                        Provider.of<EventProvider>(context, listen: false)
+                            .setEvent(
+                                eventName, eventDescription, eventDateTime);
+                      }
                       Navigator.pop(context);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                             content:
-                            Text('Please select a time for the event')),
+                                Text('Please select a time for the event')),
                       );
                     }
                   },
