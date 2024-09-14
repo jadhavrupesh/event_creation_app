@@ -95,7 +95,7 @@ class _EventListViewState extends State<EventListView> {
   Widget _buildDaysList(BuildContext context, EventProvider viewModel) {
     final year = int.parse(viewModel.selectedYear!);
     final month = viewModel.months.indexOf(viewModel.selectedMonth!);
-    final daysInMonth = DateTime(year, month + 1, 0).day;
+    final daysInMonth = DateTime(year, month + 2, 0).day;
 
     return ListView.builder(
       itemCount: daysInMonth,
