@@ -59,7 +59,7 @@ class EventProvider with ChangeNotifier {
   EventModel? getEventData(DateTime currentDate) {
     for (var event in listEventModel) {
       print("saved events currentDate = $currentDate  and saved data = ${event.selectedDate}");
-      if (event.selectedDate.day == currentDate.day &&
+      if (event.selectedDate.year == currentDate.year &&
           event.selectedDate.month == currentDate.month &&
           event.selectedDate.day == currentDate.day) {
         print("saved events currentDate = $currentDate  and saved data = ${event.selectedDate}");
